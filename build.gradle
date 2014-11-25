@@ -1,26 +1,25 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.14.4'
     }
 }
 
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 apply plugin: 'maven'
-apply plugin: 'signing'
 
 version = '0.1.1'
 group = 'com.github.machinarius'
 
 dependencies {
-    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.android.support:support-v4:21.0.2'
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     sourceSets {
         main {
@@ -51,12 +50,8 @@ ext {
     artifactId = 'preferencefragment'
 }
 
-signing {
-    sign configurations.archives
-}
-
 task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.allJava
+    source = 'src/main/java'
 }
 
 task androidJavadocsJar(type: Jar) {
@@ -68,7 +63,7 @@ task androidJavadocsJar(type: Jar) {
 task androidSourcesJar(type: Jar) {
     classifier = 'sources'
     //basename = project.artifactId
-    from android.sourceSets.main.allSource
+    from 'src/main/java'
 }
 
 artifacts {
@@ -80,13 +75,6 @@ uploadArchives {
     configuration = configurations.archives
 
     repositories.mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: sonatypeRepo) {
-            authentication(userName: sonatypeUsername,
-                    password: sonatypePassword)
-        }
-
         pom.groupId = 'com.github.machinarius'
         pom.artifactId = 'preferencefragment'
         pom.version = '0.1.1'
